@@ -1,0 +1,147 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String       @id @default(cuid())
+  email         String       @unique
+  username      String       @unique
+  passwordHash  String
+  createdAt     DateTime     @default(now())
+  profile       UserProfile?
+  stats         UserStats?
+  plans         WorkoutPlan[]
+  workoutLogs   WorkoutLog[]
+  follows       Follow[]     @relation("follower")
+  followers     Follow[]     @relation("following")
+  userRewards   UserReward[]
+}
+
+model UserProfile {
+  id              String   @id @default(cuid())
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId          String   @unique
+  age             Int
+  heightCm        Int
+  weightKg        Int
+  sex             String
+  experienceLevel String
+  goal            String
+  daysPerWeek     Int
+  equipment       Json
+}
+
+model WorkoutPlan {
+  id        String       @id @default(cuid())
+  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  name      String
+  goal      String
+  active    Boolean      @default(true)
+  createdAt DateTime     @default(now())
+  days      WorkoutDay[]
+}
+
+model WorkoutDay {
+  id            String               @id @default(cuid())
+  workoutPlan   WorkoutPlan          @relation(fields: [workoutPlanId], references: [id], onDelete: Cascade)
+  workoutPlanId String
+  dayIndex      Int
+  title         String
+  exercises     WorkoutDayExercise[]
+  logs          WorkoutLog[]
+}
+
+model Exercise {
+  id           String               @id @default(cuid())
+  name         String
+  muscleGroup  String
+  equipment    String
+  dayExercises WorkoutDayExercise[]
+  exerciseLogs ExerciseLog[]
+}
+
+model WorkoutDayExercise {
+  id            String      @id @default(cuid())
+  workoutDay    WorkoutDay  @relation(fields: [workoutDayId], references: [id], onDelete: Cascade)
+  workoutDayId  String
+  exercise      Exercise    @relation(fields: [exerciseId], references: [id])
+  exerciseId    String
+  order         Int
+  sets          Int
+  reps          String
+  restSeconds   Int?
+}
+
+model WorkoutLog {
+  id            String              @id @default(cuid())
+  user          User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId        String
+  workoutDay    WorkoutDay?         @relation(fields: [workoutDayId], references: [id])
+  workoutDayId  String?
+  date          DateTime
+  completed     Boolean             @default(false)
+  exerciseLogs  ExerciseLog[]
+}
+
+model ExerciseLog {
+  id            String      @id @default(cuid())
+  workoutLog    WorkoutLog  @relation(fields: [workoutLogId], references: [id], onDelete: Cascade)
+  workoutLogId  String
+  exercise      Exercise    @relation(fields: [exerciseId], references: [id])
+  exerciseId    String
+  setNumber     Int
+  weight        Float?
+  reps          Int
+}
+
+model Follow {
+  id           String   @id @default(cuid())
+  follower     User     @relation("follower", fields: [followerId], references: [id], onDelete: Cascade)
+  followerId   String
+  following    User     @relation("following", fields: [followingId], references: [id], onDelete: Cascade)
+  followingId  String
+  createdAt    DateTime @default(now())
+
+  @@unique([followerId, followingId])
+}
+
+model UserStats {
+  id                String  @id @default(cuid())
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId            String  @unique
+  totalXp           Int     @default(0)
+  level             Int     @default(1)
+  currentStreak     Int     @default(0)
+  longestStreak     Int     @default(0)
+  workoutsThisWeek  Int     @default(0)
+  lastWorkoutDate   DateTime?
+}
+
+model Reward {
+  id            String       @id @default(cuid())
+  name          String
+  type          String
+  requiredLevel Int?
+  requiredStreak Int?
+  createdAt     DateTime     @default(now())
+  userRewards   UserReward[]
+}
+
+model UserReward {
+  id         String   @id @default(cuid())
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     String
+  reward     Reward   @relation(fields: [rewardId], references: [id])
+  rewardId   String
+  unlockedAt DateTime @default(now())
+  equipped   Boolean  @default(false)
+
+  @@unique([userId, rewardId])
+}
+
