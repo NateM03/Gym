@@ -1,6 +1,6 @@
 # Morelifts - Workout Generator & Social Fitness Platform
 
-YoMamaLifts is a full-stack fitness application that generates personalized workout plans, tracks progress with gamification (XP, levels, streaks), and includes social features like following friends and leaderboards.
+MoreLifts is a full-stack fitness application that generates personalized workout plans, tracks progress with gamification (XP, levels, streaks), and includes social features like following friends and leaderboards.
 
 ## Features
 
@@ -201,8 +201,6 @@ fitforge/
 ```
 
 ## Deployment
-
-### Vercel (Recommended)
 
 1. Push code to GitHub
 2. Import project in Vercel
