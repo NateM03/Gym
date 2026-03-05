@@ -1,4 +1,4 @@
-# YoMamaLifts - Technical Documentation
+# MoreLifts - Technical Documentation
 
 ## Table of Contents
 1. [Project Overview](#project-overview)
@@ -16,7 +16,7 @@
 
 ## Project Overview
 
-**YoMamaLifts** is a full-stack fitness application that combines personalized workout generation, social features, and gamification. The MVP focuses on:
+**MoreLifts** is a full-stack fitness application that combines personalized workout generation, social features, and gamification. The MVP focuses on:
 
 - **Customizable Workout Plans**: Users select exercises for their chosen routine (PPL, Arnold, Upper/Lower, Full Body)
 - **Workout Logging**: Track sets, reps, weight, and rest times during workouts
